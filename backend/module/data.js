@@ -1,0 +1,47 @@
+module.exports={
+    Customers:{
+        M:{
+         age:20,
+         email:"m@kuchto.com"
+        },
+        Hh:{
+          course:{
+            "c++":{
+              duration : 3
+            }
+          }
+        },
+        K:{
+          age:20,
+          course:{
+            javascript:{
+              duration:4
+            }
+          }
+        }
+      },
+    Employees:{
+        A:{
+          age:26
+        },
+        R:{
+          age:22,
+          email:"r123@gamil.com"
+        }
+      },
+     Outsiders:{
+        deep:{
+          course:{
+            node:{
+              duration:2
+            },
+            javascript:{
+              duration:4,
+              mentor: "V"
+            }
+          }
+        },
+        K:{}
+      }
+}
+
