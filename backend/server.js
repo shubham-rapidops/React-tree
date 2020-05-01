@@ -6,28 +6,28 @@ const bodyParser = require("body-parser");
 const app = express();
 app.use(express.urlencoded())
 app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 const access = Access.getInstance();
 let id=0;
 
-let route='';
 
-function itreate(obj){
-  
-  console.log(obj)
 
-  let data =  Object.keys(obj).map(item=>{
+function itreate(obj,route){
+ let road=route
+  let data =  Object.keys(obj).map((item,i)=>{
     if(typeof obj[item]=='object'){
-            
-      return {label:item ,id:route,children:itreate(obj[item])}
+     let temp=road+'.'+item
+      return {label:item ,id:temp,children:itreate(obj[item],temp)}
     }
     else{
-      console.log(item)
-      // route=route+'.'+item
-      let send={label:item,id:route,children:[{label:obj[item], id:++id}]}
-      // route=""
+      let temp=road+"."+item
+      
+      let send={label:item,id:temp,children:[{label:obj[item], id:++id}]}
+      
      return send
     }
   })
+  
   return data
 }
 
@@ -36,15 +36,26 @@ app.get("/api/getdata",async (req,res)=>{
   
   access.getAllData()
   .then((data)=>{
+
+   let obj= Object.keys(data[0]).map(item=>{
+      let route="";
+      if(typeof data[0][item]=='object'){
+        route=item
+        return {label:item ,id:route,children:itreate(data[0][item],route)}
+      }
+      else{
+        console.log(item)
+        route=item
+        let send={label:item,id:route,children:[{label:data[0][item], id:++id}]}
+        
+       return send
+      }
+      
+    })
+    // res.send(obj)
     res.send(data[0])
     // res.send(itreate(data[0]))
-    // let newdata=data.map(item=>{
-    //                console.log(item)
-    //               return itreate(item)
-    //             })
-        
-    // console.log(object)
-   
+       
   }) 
   .catch(err=>console.log(err))    
      
@@ -91,6 +102,7 @@ app.post('/api/add',async(req,res)=>{
   console.log('value------>',value)
 
   let query = destination == "parent" ? key : destination+'.'+key
+  console.log(query)
   access.addData(query, value == ''? {}:value)
   .then(data=>{
     console.log(data)
